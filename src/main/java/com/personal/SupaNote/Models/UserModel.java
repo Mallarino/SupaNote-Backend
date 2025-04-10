@@ -45,7 +45,7 @@ public class UserModel implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.email; // o this.username según tu lógica
+        return this.email;
     }
 
     @Override

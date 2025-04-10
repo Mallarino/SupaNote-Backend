@@ -15,16 +15,7 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256); // clave secreta para firmar
-
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
-
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
-    }
+    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
@@ -33,6 +24,16 @@ public class JwtService {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
 
     public String generateToken(UserDetails userDetails) {
         return Jwts.builder()
@@ -43,16 +44,20 @@ public class JwtService {
                 .compact();
     }
 
+    private Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    private boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    } // Si la fecha de expiracion del token es antes de la fecha actual, devuelve true
+
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
-    private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
 
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
-    }
+
+
 }

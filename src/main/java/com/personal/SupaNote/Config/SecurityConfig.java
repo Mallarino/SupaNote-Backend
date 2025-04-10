@@ -26,20 +26,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .securityMatcher("/**")
+                .securityMatcher("/**") // Aplica seguridad a todas las rutas
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/auth/**").permitAll() // Permite sin token los endpoints de autenticación
+                        .anyRequest().authenticated() // Todo lo demás requiere autenticación
                 )
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // No guardamos sesión (JWT es sin estado)
                 )
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .csrf(csrf -> csrf.disable())
+                .authenticationProvider(authenticationProvider()) // Usa nuestro provider personalizado
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class) // Ejecuta nuestro filtro antes del de Spring
+                .csrf(csrf -> csrf.disable()) // Deshabilita CSRF (no necesario para APIs REST)
                 .build();
     }
 
+    //Esto le dice a Spring cómo validar usuarios:
+    //-Cargar el usuario con userDetailsService.
+    //-Comparar la contraseña usando el encoder.
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();

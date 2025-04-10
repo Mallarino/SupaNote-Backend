@@ -24,25 +24,31 @@ public class NotesServices {
 
     public List<NoteModel> getNotesByUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-
         UserModel user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         return noteRepository.findByUserId(user.getId());
     }
 
-    public List<NoteModel> getNoteByTitle(Long id, String title){
-        return noteRepository.findByUserIdAndTitleContainingIgnoreCase(id, title);
-    }
-
     public NoteModel createNote(NoteModel note){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserModel user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        note.setUser(user);
+
         return noteRepository.save(note);
     }
 
 
     public NoteModel updateNoteById(Long id, NoteModel request){
-        return noteRepository.findById(id).
-                map(note ->{
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserModel user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        return noteRepository.findById(id)
+                .filter(note -> note.getUser().getId().equals(user.getId()))
+                .map(note ->{
                     note.setTitle(request.getTitle());
                     note.setContent(request.getContent());
                     note.setCreatedAt(request.getCreatedAt());
@@ -51,13 +57,16 @@ public class NotesServices {
     }
 
     public String deleteNoteById(Long id){
-        try {
-            noteRepository.deleteById(id);
-            return "Nota con id " + id + " eliminada con exito";
-        } catch (Exception e){
-            return "Error al eliminar la nota";
-        }
-    }
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserModel user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
+        NoteModel note = noteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Nota no encontrada"));
+
+        noteRepository.deleteById(id);
+        return "Nota con id " + id + " eliminada con éxito";
+
+    }
 
 }
