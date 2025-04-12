@@ -46,10 +46,12 @@ public class AuthService implements UserDetailsService {
             throw new RuntimeException("El email ya está registrado.");
         }
 
-        UserModel user = new UserModel();
-        user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        UserModel user = UserModel.builder()
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .notes(new ArrayList<>())
+                .build();
 
         userRepository.save(user);
 

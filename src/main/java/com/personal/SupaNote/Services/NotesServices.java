@@ -65,7 +65,7 @@ public class NotesServices {
                 .orElseThrow(() -> new RuntimeException("Nota no encontrada"));
 
         noteRepository.deleteById(id);
-        return "Nota con id " + id + " eliminada con éxito";
+        return "Nota con id " + id + " eliminada con exito";
 
     }
 
