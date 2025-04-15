@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +37,7 @@ public class NotesServices {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         note.setUser(user);
+        note.setCreatedAt(LocalDateTime.now());
 
         return noteRepository.save(note);
     }
@@ -51,7 +53,6 @@ public class NotesServices {
                 .map(note ->{
                     note.setTitle(request.getTitle());
                     note.setContent(request.getContent());
-                    note.setCreatedAt(request.getCreatedAt());
                     return noteRepository.save(note);
                 }).orElseThrow(() -> new RuntimeException("Nota no encontrada"));
     }
