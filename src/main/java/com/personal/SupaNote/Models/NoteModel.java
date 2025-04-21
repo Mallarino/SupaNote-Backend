@@ -31,6 +31,9 @@ public class NoteModel {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(length = 20)
+    private String noteColor;
+
     // Relación con User
     @ManyToOne
     @JsonIgnore

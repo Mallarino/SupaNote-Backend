@@ -1,5 +1,6 @@
 package com.personal.SupaNote.DTOs;
 
+import com.personal.SupaNote.Models.UserModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -7,4 +8,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class AuthResponse {
     private String token;
+    private UserDto user;
 }

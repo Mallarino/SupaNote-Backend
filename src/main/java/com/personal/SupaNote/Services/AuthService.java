@@ -3,6 +3,7 @@ package com.personal.SupaNote.Services;
 import com.personal.SupaNote.DTOs.AuthResponse;
 import com.personal.SupaNote.DTOs.LoginRequest;
 import com.personal.SupaNote.DTOs.RegisterRequest;
+import com.personal.SupaNote.DTOs.UserDto;
 import com.personal.SupaNote.Models.UserModel;
 import com.personal.SupaNote.Repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
@@ -56,7 +57,8 @@ public class AuthService implements UserDetailsService {
         userRepository.save(user);
 
         String token = jwtService.generateToken(user);
-        return new AuthResponse(token);
+        UserDto userDto = new UserDto(user);
+        return new AuthResponse(token, userDto);
     }
 
     public AuthResponse login(LoginRequest loginRequest) {
@@ -68,7 +70,8 @@ public class AuthService implements UserDetailsService {
         }
 
         String token = jwtService.generateToken(user);
-        return new AuthResponse(token);
+        UserDto userDto = new UserDto(user);
+        return new AuthResponse(token, userDto);
     }
 
 

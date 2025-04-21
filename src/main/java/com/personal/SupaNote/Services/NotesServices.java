@@ -53,6 +53,7 @@ public class NotesServices {
                 .map(note ->{
                     note.setTitle(request.getTitle());
                     note.setContent(request.getContent());
+                    note.setNoteColor(request.getNoteColor());
                     return noteRepository.save(note);
                 }).orElseThrow(() -> new RuntimeException("Nota no encontrada"));
     }

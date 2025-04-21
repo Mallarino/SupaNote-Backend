@@ -36,6 +36,10 @@ public class UserModel implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<NoteModel> notes = new ArrayList<>();
 
+    public String getName(){
+        return this.username;
+    }
+
     // Métodos requeridos por UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

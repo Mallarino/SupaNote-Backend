@@ -15,11 +15,15 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private static final String key = "mi_clave_super_secreta_de_32_bytes_o_mas!!";
+
+    private Key getSigningKey() {
+        return Keys.hmacShaKeyFor(key.getBytes());
+    }
 
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(key)
+                .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
@@ -40,7 +44,7 @@ public class JwtService {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24 horas
-                .signWith(key)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -56,8 +60,6 @@ public class JwtService {
         final String username = extractUsername(token);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
-
-
 
 
 }
