@@ -8,6 +8,7 @@ import com.personal.SupaNote.Models.UserModel;
 import com.personal.SupaNote.Repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -44,7 +45,7 @@ public class AuthService implements UserDetailsService {
     public AuthResponse register(RegisterRequest request) {
         // Verifica si ya existe un usuario con ese email
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new RuntimeException("El email ya está registrado.");
+            return new AuthResponse(null,null ,"Email already registered");
         }
 
         UserModel user = UserModel.builder()
@@ -58,20 +59,23 @@ public class AuthService implements UserDetailsService {
 
         String token = jwtService.generateToken(user);
         UserDto userDto = new UserDto(user);
-        return new AuthResponse(token, userDto);
+        return new AuthResponse(token, userDto, "User registered");
     }
 
     public AuthResponse login(LoginRequest loginRequest) {
-        UserModel user = userRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        UserModel user = userRepository.findByEmail(loginRequest.getEmail()).orElse(null);
+
+        if (user == null) {
+            return new AuthResponse(null, null, "Email not found");
+        }
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Contraseña incorrecta");
+            return new AuthResponse(null, null, "Incorrect password");
         }
 
         String token = jwtService.generateToken(user);
         UserDto userDto = new UserDto(user);
-        return new AuthResponse(token, userDto);
+        return new AuthResponse(token, userDto, "Successful login");
     }
 
 

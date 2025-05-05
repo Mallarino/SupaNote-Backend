@@ -6,6 +6,7 @@ import com.personal.SupaNote.DTOs.RegisterRequest;
 import com.personal.SupaNote.Models.UserModel;
 import com.personal.SupaNote.Services.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,13 +22,19 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest registerRequest) {
-        AuthResponse token = authService.register(registerRequest);
-        return ResponseEntity.ok(token);
+        AuthResponse response = authService.register(registerRequest);
+        if (response.getToken() == null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
         AuthResponse response = authService.login(loginRequest);
+        if (response.getToken() == null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
         return ResponseEntity.ok(response);
     }
 }
