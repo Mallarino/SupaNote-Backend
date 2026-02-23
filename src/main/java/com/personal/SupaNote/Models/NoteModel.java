@@ -24,7 +24,6 @@ public class NoteModel {
     @Column(nullable = false, length = 100)
     private String title;
 
-    @Lob //Large text
     @Column(nullable = false)
     private String content;
 
