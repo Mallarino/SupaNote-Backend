@@ -46,7 +46,7 @@ public class NoteServiceTest {
                 .build();
 
         List<NoteModel> mockNotes = List.of(
-                new NoteModel(1L, "prueba", "contenido", LocalDateTime.now(), mockUser)
+                new NoteModel(1L, "prueba", "contenido", LocalDateTime.now(), "red", mockUser)
         );
 
         Authentication authentication = mock(Authentication.class);
@@ -75,8 +75,8 @@ public class NoteServiceTest {
                 .notes(new ArrayList<>())
                 .build();
 
-        NoteModel mockNote = new NoteModel(null, "prueba", "contenido", LocalDateTime.now(), null);
-        NoteModel savedNote = new NoteModel(1L, "prueba", "contenido", mockNote.getCreatedAt(), mockUser);
+        NoteModel mockNote = new NoteModel(null, "prueba", "contenido", LocalDateTime.now(), "red",  null);
+        NoteModel savedNote = new NoteModel(1L, "prueba", "contenido", mockNote.getCreatedAt(), "red", mockUser);
 
         Authentication authentication = mock(Authentication.class);
         when(authentication.getName()).thenReturn("prueba@email.com");
@@ -107,7 +107,7 @@ public class NoteServiceTest {
                 .notes(new ArrayList<>())
                 .build();
 
-        NoteModel mockNote = new NoteModel(1L, "prueba", "contenido", LocalDateTime.now(), mockUser);
+        NoteModel mockNote = new NoteModel(1L, "prueba", "contenido", LocalDateTime.now(), "red", mockUser);
 
         NoteModel request = new NoteModel();
         request.setTitle("Prueba actualizada");
@@ -140,8 +140,8 @@ public class NoteServiceTest {
                 .notes(new ArrayList<>())
                 .build();
 
-        NoteModel mockNote = new NoteModel(1L, "prueba", "contenido", LocalDateTime.now(), mockUser);
-
+        NoteModel mockNote = new NoteModel(1L, "prueba", "contenido", LocalDateTime.now(), "red", mockUser);
+ "red",
         Authentication authentication = mock(Authentication.class);
         when(authentication.getName()).thenReturn("prueba@email.com");
 
