@@ -141,7 +141,7 @@ public class NoteServiceTest {
                 .build();
 
         NoteModel mockNote = new NoteModel(1L, "prueba", "contenido", LocalDateTime.now(), "red", mockUser);
- "red",
+
         Authentication authentication = mock(Authentication.class);
         when(authentication.getName()).thenReturn("prueba@email.com");
 
